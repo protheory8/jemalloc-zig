@@ -8,7 +8,7 @@ test "allocate memory and free" {
         height: i32,
         index: usize,
     };
-    
+
     const memory: []TestStruct = jemalloc_allocator.alloc(TestStruct, 1) catch @panic("test failure");
     jemalloc_allocator.free(memory);
 }
@@ -20,7 +20,7 @@ test "allocate memory, use it and free" {
         title: []const u8,
         index: usize,
     };
-    
+
     const memory: []TestStruct = jemalloc_allocator.alloc(TestStruct, 1) catch @panic("test failure");
 
     memory[0] = TestStruct{

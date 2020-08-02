@@ -10,7 +10,7 @@ pub fn build(b: *Builder) void {
     lib.setBuildMode(mode);
     lib.install();
 
-    const main_tests = b.addTest("src/tests.zig"); 
+    const main_tests = b.addTest("src/tests.zig");
     main_tests.linkLibC();
     main_tests.addSystemIncludeDir("./src/c_include");
     main_tests.linkSystemLibrary("jemalloc");
