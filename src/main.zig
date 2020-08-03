@@ -9,11 +9,9 @@ var jemalloc_allocator_state = Allocator{
     .resizeFn = jemallocResizeFn,
 };
 
-const align_of_max_align_t = c.get_align_of_max_align_t();
-
 fn jemallocAllocFn(self: *Allocator, len: usize, ptr_align: u29, len_align: u29) Allocator.Error![]u8 {
     var ptr: [*]u8 = undefined;
-    if (ptr_align <= align_of_max_align_t and ptr_align <= len) {
+    if (ptr_align <= @alignOf(c_longdouble) and ptr_align <= len) {
         ptr = @ptrCast([*]u8, c.malloc(len) orelse return error.OutOfMemory);
     } else {
         ptr = @ptrCast([*]u8, c.mallocx(len, c.jemalloc_mallocx_align_fn(ptr_align)) orelse return error.OutOfMemory);
