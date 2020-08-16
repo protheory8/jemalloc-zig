@@ -9,7 +9,7 @@ var jemalloc_allocator_state = Allocator{
     .resizeFn = jemallocResizeFn,
 };
 
-fn jemallocAllocFn(self: *Allocator, len: usize, ptr_align: u29, len_align: u29) Allocator.Error![]u8 {
+fn jemallocAllocFn(self: *Allocator, len: usize, ptr_align: u29, len_align: u29, ret_addr: usize) Allocator.Error![]u8 {
     var ptr: [*]u8 = undefined;
     if (ptr_align <= @alignOf(c_longdouble) and ptr_align <= len) {
         ptr = @ptrCast([*]u8, c.malloc(len) orelse return error.OutOfMemory);
@@ -25,7 +25,7 @@ fn jemallocAllocFn(self: *Allocator, len: usize, ptr_align: u29, len_align: u29)
     return ptr[0..mem.alignBackwardAnyAlign(full_len, len_align)];
 }
 
-fn jemallocResizeFn(self: *Allocator, buf: []u8, new_len: usize, len_align: u29) Allocator.Error!usize {
+fn jemallocResizeFn(self: *Allocator, buf: []u8, buf_align: u29, new_len: usize, len_align: u29, ret_addr: usize) Allocator.Error!usize {
     if (new_len == 0) {
         c.free(buf.ptr);
         return 0;
