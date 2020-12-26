@@ -1,5 +1,7 @@
 const std = @import("std");
 const mem = std.mem;
+const math = std.math;
+const assert = std.debug.assert;
 const Allocator = mem.Allocator;
 const c = @cImport(@cInclude("jemalloc_zig_glue.h"));
 
@@ -10,13 +12,11 @@ var jemalloc_allocator_state = Allocator{
 };
 
 fn jemallocAllocFn(self: *Allocator, len: usize, ptr_align: u29, len_align: u29, ret_addr: usize) Allocator.Error![]u8 {
-    var ptr: [*]u8 = undefined;
-    if (ptr_align <= @alignOf(c_longdouble) and ptr_align <= len) {
-        ptr = @ptrCast([*]u8, c.malloc(len) orelse return error.OutOfMemory);
-    } else {
-        ptr = @ptrCast([*]u8, c.mallocx(len, c.jemalloc_mallocx_align_fn(ptr_align)) orelse return error.OutOfMemory);
-    }
+    assert(len > 0);
+    assert(ptr_align > 0);
+    assert(math.isPowerOfTwo(ptr_align));
 
+    var ptr: [*]u8 = @ptrCast([*]u8, c.mallocx(len, c.jemalloc_mallocx_align_fn(ptr_align)) orelse return error.OutOfMemory);
     if (len_align == 0) {
         return ptr[0..len];
     }

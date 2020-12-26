@@ -61,7 +61,29 @@ test "allocate memory, use it, reallocate memory, use it and free" {
         .index = 120,
     };
 
+    testing.expect(memory[0].width == 1280);
+    testing.expect(memory[0].height == 720);
+    testing.expect(memory[0].index == 12);
+
+    testing.expect(memory[1].width == 1230);
+    testing.expect(memory[1].height == 820);
+    testing.expect(memory[1].index == 120);
+
     memory = jemalloc_allocator.realloc(memory, 4) catch @panic("test failure");
+
+    memory[0] = TestStruct{
+        .width = 6122,
+        .height = 810,
+        .title = "Game",
+        .index = 99,
+    };
+
+    memory[1] = TestStruct{
+        .width = 728,
+        .height = 187,
+        .title = "Race game",
+        .index = 7,
+    };
 
     memory[2] = TestStruct{
         .width = 12612,
@@ -77,13 +99,13 @@ test "allocate memory, use it, reallocate memory, use it and free" {
         .index = 21,
     };
 
-    testing.expect(memory[0].width == 1280);
-    testing.expect(memory[0].height == 720);
-    testing.expect(memory[0].index == 12);
+    testing.expect(memory[0].width == 6122);
+    testing.expect(memory[0].height == 810);
+    testing.expect(memory[0].index == 99);
 
-    testing.expect(memory[1].width == 1230);
-    testing.expect(memory[1].height == 820);
-    testing.expect(memory[1].index == 120);
+    testing.expect(memory[1].width == 728);
+    testing.expect(memory[1].height == 187);
+    testing.expect(memory[1].index == 7);
 
     testing.expect(memory[2].width == 12612);
     testing.expect(memory[2].height == 45);
